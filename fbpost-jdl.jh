@@ -1,0 +1,22 @@
+
+
+entity Fbpost {
+    url String,
+    description String,
+    name String,
+    caption String,
+	place String,
+	createdOn String,
+	createdBy String,
+	objectId String,
+	privacy String,
+    status String
+}
+
+paginate Fbpost with pagination
+
+dto * with mapstruct
+
+service all with serviceImpl 
+
+angularSuffix * with pPost
