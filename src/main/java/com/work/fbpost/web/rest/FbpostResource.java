@@ -126,5 +126,20 @@ public class FbpostResource {
         fbpostService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
-
+    
+    
+    @GetMapping("/fbposts/getNext")
+    @Timed
+    public ResponseEntity<FbpostDTO> getNextFbpost() {
+        FbpostDTO fbpostDTO = fbpostService.getNextPost();
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(fbpostDTO));
+    }
+    
+    @GetMapping("/fbposts/updateObjectId/{id}/{objectId}")
+    @Timed
+    public ResponseEntity<FbpostDTO> updateObjectId(@PathVariable("id") Long id,@PathVariable("objectId") String objectId) {
+        FbpostDTO fbpostDTO = fbpostService.updateObjectId(id, objectId);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(fbpostDTO));
+    }    
+    
 }

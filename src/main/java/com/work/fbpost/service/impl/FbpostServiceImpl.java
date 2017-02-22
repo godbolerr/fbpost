@@ -21,71 +21,104 @@ import java.util.stream.Collectors;
  */
 @Service
 @Transactional
-public class FbpostServiceImpl implements FbpostService{
+public class FbpostServiceImpl implements FbpostService {
 
-    private final Logger log = LoggerFactory.getLogger(FbpostServiceImpl.class);
-    
-    private final FbpostRepository fbpostRepository;
+	private final Logger log = LoggerFactory.getLogger(FbpostServiceImpl.class);
 
-    private final FbpostMapper fbpostMapper;
+	private final FbpostRepository fbpostRepository;
 
-    public FbpostServiceImpl(FbpostRepository fbpostRepository, FbpostMapper fbpostMapper) {
-        this.fbpostRepository = fbpostRepository;
-        this.fbpostMapper = fbpostMapper;
-    }
+	private final FbpostMapper fbpostMapper;
 
-    /**
-     * Save a fbpost.
-     *
-     * @param fbpostDTO the entity to save
-     * @return the persisted entity
-     */
-    @Override
-    public FbpostDTO save(FbpostDTO fbpostDTO) {
-        log.debug("Request to save Fbpost : {}", fbpostDTO);
-        Fbpost fbpost = fbpostMapper.fbpostDTOToFbpost(fbpostDTO);
-        fbpost = fbpostRepository.save(fbpost);
-        FbpostDTO result = fbpostMapper.fbpostToFbpostDTO(fbpost);
-        return result;
-    }
+	public FbpostServiceImpl(FbpostRepository fbpostRepository, FbpostMapper fbpostMapper) {
+		this.fbpostRepository = fbpostRepository;
+		this.fbpostMapper = fbpostMapper;
+	}
 
-    /**
-     *  Get all the fbposts.
-     *  
-     *  @param pageable the pagination information
-     *  @return the list of entities
-     */
-    @Override
-    @Transactional(readOnly = true)
-    public Page<FbpostDTO> findAll(Pageable pageable) {
-        log.debug("Request to get all Fbposts");
-        Page<Fbpost> result = fbpostRepository.findAll(pageable);
-        return result.map(fbpost -> fbpostMapper.fbpostToFbpostDTO(fbpost));
-    }
+	/**
+	 * Save a fbpost.
+	 *
+	 * @param fbpostDTO
+	 *            the entity to save
+	 * @return the persisted entity
+	 */
+	@Override
+	public FbpostDTO save(FbpostDTO fbpostDTO) {
+		log.debug("Request to save Fbpost : {}", fbpostDTO);
+		Fbpost fbpost = fbpostMapper.fbpostDTOToFbpost(fbpostDTO);
+		fbpost = fbpostRepository.save(fbpost);
+		FbpostDTO result = fbpostMapper.fbpostToFbpostDTO(fbpost);
+		return result;
+	}
 
-    /**
-     *  Get one fbpost by id.
-     *
-     *  @param id the id of the entity
-     *  @return the entity
-     */
-    @Override
-    @Transactional(readOnly = true)
-    public FbpostDTO findOne(Long id) {
-        log.debug("Request to get Fbpost : {}", id);
-        Fbpost fbpost = fbpostRepository.findOne(id);
-        FbpostDTO fbpostDTO = fbpostMapper.fbpostToFbpostDTO(fbpost);
-        return fbpostDTO;
-    }
+	/**
+	 * Get all the fbposts.
+	 * 
+	 * @param pageable
+	 *            the pagination information
+	 * @return the list of entities
+	 */
+	@Override
+	@Transactional(readOnly = true)
+	public Page<FbpostDTO> findAll(Pageable pageable) {
+		log.debug("Request to get all Fbposts");
+		Page<Fbpost> result = fbpostRepository.findAll(pageable);
+		return result.map(fbpost -> fbpostMapper.fbpostToFbpostDTO(fbpost));
+	}
 
-    /**
-     *  Delete the  fbpost by id.
-     *
-     *  @param id the id of the entity
-     */
-    @Override
-    public void delete(Long id) {
-        log.debug("Request to delete Fbpost : {}", id);
-        fbpostRepository.delete(id);
-    }
+	/**
+	 * Get one fbpost by id.
+	 *
+	 * @param id
+	 *            the id of the entity
+	 * @return the entity
+	 */
+	@Override
+	@Transactional(readOnly = true)
+	public FbpostDTO findOne(Long id) {
+		log.debug("Request to get Fbpost : {}", id);
+		Fbpost fbpost = fbpostRepository.findOne(id);
+		FbpostDTO fbpostDTO = fbpostMapper.fbpostToFbpostDTO(fbpost);
+		return fbpostDTO;
+	}
+
+	/**
+	 * Delete the fbpost by id.
+	 *
+	 * @param id
+	 *            the id of the entity
+	 */
+	@Override
+	public void delete(Long id) {
+		log.debug("Request to delete Fbpost : {}", id);
+		fbpostRepository.delete(id);
+	}
+
+	@Override
+	public FbpostDTO getNextPost() {
+		Long id = fbpostRepository.getMaxIdOfUnreadPost("NOT_READ");
+
+		if (id != null) {
+			Fbpost fbpost = fbpostRepository.findOne(id);
+			fbpost.setStatus("READ");
+			fbpostRepository.save(fbpost);
+			FbpostDTO fbpostDTO = fbpostMapper.fbpostToFbpostDTO(fbpost);
+			return fbpostDTO;
+		}
+		return null;
+
+	}
+
+	@Override
+	public FbpostDTO updateObjectId(Long id, String objectId) {
+
+		Fbpost fbpost = fbpostRepository.findOne(id);
+		
+		if ( fbpost != null ) {
+			fbpost.setObjectId(objectId);
+			fbpostRepository.save(fbpost);
+			FbpostDTO fbpostDTO = fbpostMapper.fbpostToFbpostDTO(fbpost);
+			return fbpostDTO;			
+		}		
+		return null;
+	}
 }
