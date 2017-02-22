@@ -52,8 +52,8 @@ public class MicroserviceSecurityConfiguration extends WebSecurityConfigurerAdap
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         .and()
             .authorizeRequests()
-            .antMatchers("/api/**").permitAll() // replaced authenticated()
-            .antMatchers("/management/health").permitAll()
+            .antMatchers("/api/**").authenticated() // permitAll() // replaced
+            .antMatchers("/management/health").authenticated() // permitAll()
             .antMatchers("/management/**").hasAuthority(AuthoritiesConstants.ADMIN)
             .antMatchers("/swagger-resources/configuration/ui").permitAll()
         .and()
