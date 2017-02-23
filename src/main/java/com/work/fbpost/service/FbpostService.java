@@ -40,23 +40,4 @@ public interface FbpostService {
      *  @param id the id of the entity
      */
     void delete(Long id);
-    
-    
-    /**
-     * Return the next post to publish
-     * @return
-     */
-    FbpostDTO getNextPost();
-    
-    /**
-     * Update object id as given by FB
-     * 
-     * @param id
-     * @param objectId
-     * @return
-     */
-    FbpostDTO updateObjectId(Long id, String objectId);
-    
-    
-    
 }
