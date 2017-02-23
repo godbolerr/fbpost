@@ -14,6 +14,6 @@ import com.work.fbpost.domain.Fbpost;
 public interface FbpostRepository extends JpaRepository<Fbpost,Long> {
 	
 	@Query("SELECT max(t.id) FROM Fbpost t where t.status = :status") 
-	long getMaxIdOfUnreadPost(@Param("status") String status);
+	Long getMaxIdOfUnreadPost(@Param("status") String status);
 
 }
