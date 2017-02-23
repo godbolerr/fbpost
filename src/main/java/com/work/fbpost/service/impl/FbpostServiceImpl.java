@@ -88,4 +88,34 @@ public class FbpostServiceImpl implements FbpostService{
         log.debug("Request to delete Fbpost : {}", id);
         fbpostRepository.delete(id);
     }
+    
+
+	@Override
+	public FbpostDTO getNextPost() {
+		Long id = fbpostRepository.getMaxIdOfUnreadPost("NOT_READ");
+
+		if (id != null) {
+			Fbpost fbpost = fbpostRepository.findOne(id);
+			fbpost.setStatus("READ");
+			fbpostRepository.save(fbpost);
+			FbpostDTO fbpostDTO = fbpostMapper.fbpostToFbpostDTO(fbpost);
+			return fbpostDTO;
+		}
+		return null;
+
+	}
+
+	@Override
+	public FbpostDTO updateObjectId(Long id, String objectId) {
+
+		Fbpost fbpost = fbpostRepository.findOne(id);
+		
+		if ( fbpost != null ) {
+			fbpost.setObjectId(objectId);
+			fbpostRepository.save(fbpost);
+			FbpostDTO fbpostDTO = fbpostMapper.fbpostToFbpostDTO(fbpost);
+			return fbpostDTO;			
+		}		
+		return null;
+	}    
 }
