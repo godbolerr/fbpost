@@ -51,6 +51,11 @@ public class FbpostResource {
     @Timed
     public ResponseEntity<FbpostDTO> createFbpost(@RequestBody FbpostDTO fbpostDTO) throws URISyntaxException {
         log.debug("REST request to save Fbpost : {}", fbpostDTO);
+        
+        if ( fbpostDTO.getStatus() == null ) {
+        	fbpostDTO.setStatus("NOT_READ");
+        }
+        
         if (fbpostDTO.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new fbpost cannot already have an ID")).body(null);
         }
